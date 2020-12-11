@@ -1,0 +1,5 @@
+version: '3.7'
+
+# SPECIFY CONFIGURATION FOR PROJECTS
+
+# here you can add openvpn or something else what is needed for this project

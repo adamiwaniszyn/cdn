@@ -1,0 +1,20 @@
+version: '3.7'
+
+# FOR DEVELOPERS ONLY
+# THIS COMPOSE IS NOT INCLUDE TO GIT
+
+# here you can add phpMyAdmin or something else what you need locally
+
+
+# example how to setup mysql on stable ip - this ip will not change after ./bin/docker down/up
+services:
+  magento.db:
+    networks:
+      external_lan:
+        ipv4_address: 172.172.67.5
+
+networks:
+  external_lan:
+    ipam:
+      config:
+      - subnet: 172.172.67.1/24

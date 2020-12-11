@@ -1,0 +1,43 @@
+server
+{
+    listen 80;
+
+    server_name default;
+
+    root /;
+
+    client_body_buffer_size 50M;
+    client_max_body_size    50M;
+
+    server_tokens off;
+
+    proxy_buffer_size 128k;
+    proxy_buffers 4 256k;
+    proxy_busy_buffers_size 256k;
+
+
+    location / {
+        set $params '';
+        set $nginxPath '';
+        set $thumborPath '';
+
+        if ( $uri ~* ^/(.*)/media/(.*)\.(jpg|jpeg|png|gif)$ ) {
+            set $params '$1';
+            set $nginxPath '/cdn-media/$2.$3';
+            set $thumborPath '$2.$3';
+        }
+
+        if ($params = '') {
+            set $params '${DEFAULT_PARAMS}';
+        }
+
+        if ( !-f $document_root$nginxPath ) {
+            rewrite ^ /$params/${PLACEHOLDER} break;
+            proxy_pass http://cdn.thumbor;
+        }
+
+        rewrite ^ /$params/$thumborPath break;
+        proxy_pass http://cdn.thumbor;
+    }
+
+}

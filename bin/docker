@@ -1,0 +1,31 @@
+#!/usr/bin/env bash
+set -e
+
+source .env
+
+if [[ -z "$ENV" ]] ; then
+  ENV=prod
+fi
+
+export PUID=$(id -u $PROJECT_USER)
+export PGID=$(id -g $PROJECT_USER)
+
+COMMAND="docker-compose -p $COMPOSE_PROJECT_NAME"
+
+for file in $(find $PWD/docker -maxdepth 1 -regex "$PWD/docker/[a-z]+\(\.$ENV\)?\.yml") ; do
+#echo $file
+  COMMAND="$COMMAND -f $file"
+done
+
+if [[ -f "$PWD/local/docker/compose.yml" ]]; then
+    COMMAND="$COMMAND -f $PWD/local/docker/compose.yml"
+fi
+
+if [[ -f "$PWD/local/docker/compose.dev.yml" ]]; then
+    COMMAND="$COMMAND -f $PWD/local/docker/compose.dev.yml"
+fi
+
+COMMAND="$COMMAND $@"
+
+#echo $COMMAND;
+bash -c "$COMMAND"

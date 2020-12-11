@@ -1,0 +1,4 @@
+/.idea/
+/data/
+/local/docker/compose.dev.yml
+/.env
